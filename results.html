@@ -2,42 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Results • PM Orientation Survey</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PM Compass — Results</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Your Results</h1>
-      <p>These are your totals across the six orientations.</p>
+      <h1>Your PM Compass Results</h1>
+      <p class="lede">Scores are ordered clockwise around the triangle, starting with the user‑focused roles.</p>
     </header>
-    <main id="results">
-      <!-- Filled by JS -->
+
+    <main class="results-grid">
+      <section>
+        <ul id="resultsList" class="results-list"></ul>
+        <div class="cta">
+          <button onclick="window.location.href='index.html'">Restart</button>
+        </div>
+      </section>
+
+      <section>
+        <div class="tri-card">
+          <svg id="triViz" viewBox="0 0 600 560" role="img" aria-label="User–Tech–Business triangle visualization">
+            <!-- Background triangle -->
+            <defs>
+              <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F5D0FE"/>
+                <stop offset="50%" stop-color="#C7D2FE"/>
+                <stop offset="100%" stop-color="#A7F3D0"/>
+              </linearGradient>
+            </defs>
+            <polygon id="triBg" fill="url(#triGrad)" stroke="#e5e7eb" stroke-width="2"
+              points="300,40 560,500 40,500" />
+
+            <!-- Axes labels -->
+            <text x="300" y="24" text-anchor="middle" class="tri-label">👤 User</text>
+            <text x="575" y="515" text-anchor="end" class="tri-label">⚙️ Tech</text>
+            <text x="25" y="515" text-anchor="start" class="tri-label">💼 Business</text>
+
+            <!-- Marker for the computed point -->
+            <circle id="point" cx="300" cy="500" r="7" fill="#1D4ED8" stroke="#0B3AAE" stroke-width="2" />
+            <text id="pointLabel" x="300" y="500" dy="-12" text-anchor="middle" class="point-label">Your position</text>
+          </svg>
+        </div>
+      </section>
     </main>
-    <footer>
-      <button onclick="window.location.href='index.html'">Restart</button>
-    </footer>
   </div>
+
   <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const keys = ["Adv","Innov","Tech","Arch","Growth","Oper"];
-      const scores = {};
-      keys.forEach(k => scores[k] = Number(params.get(k) || 0));
+    const params = new URLSearchParams(window.location.search);
+    const order = [
+      'Advocate', 'Innovator',   // user‑focused — start here
+      'Technologist', 'Architect', // tech‑focused
+      'Strategist', 'Operator'     // business‑focused
+    ];
 
-      const container = document.getElementById('results');
-      let html = '<ul class="results-list">';
-      keys.forEach(k => {
-        html += '<li><strong>'+k+':</strong> '+scores[k]+'</li>';
-      });
-      html += '</ul>';
+    const scores = Object.fromEntries(order.map(k => [k, Number(params.get(k) || 0)]));
 
-      // Shareable URL
-      const share = window.location.href;
-      html += '<p><small>Shareable link with your scores is in the address bar.</small></p>';
-      container.innerHTML = html;
-    })();
+    // Render list in requested clockwise order
+    const ul = document.getElementById('resultsList');
+    order.forEach(k => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="r-name">${k}</span><span class="r-score">${scores[k]}</span>`;
+      ul.appendChild(li);
+    });
+
+    // Compute User/Tech/Business aggregates to position the point
+    // U = Advocate + Innovator; T = Technologist + Architect; B = Strategist + Operator
+    let U = (scores['Advocate'] || 0) + (scores['Innovator'] || 0);
+    let T = (scores['Technologist'] || 0) + (scores['Architect'] || 0);
+    let B = (scores['Strategist'] || 0) + (scores['Operator'] || 0);
+    const total = U + T + B;
+    if (total === 0) { U = T = B = 1; }
+
+    const u = U / (U + T + B);
+    const t = T / (U + T + B);
+    const b = B / (U + T + B);
+
+    // Vertices (SVG coords): U(300,40), T(560,500), B(40,500)
+    const Ux = 300, Uy = 40;
+    const Tx = 560, Ty = 500;
+    const Bx =  40, By = 500;
+    const x = u*Ux + t*Tx + b*Bx;
+    const y = u*Uy + t*Ty + b*By;
+
+    const point = document.getElementById('point');
+    const label = document.getElementById('pointLabel');
+    point.setAttribute('cx', x);
+    point.setAttribute('cy', y);
+
+    const sorted = [...order].sort((a,b) => (scores[b]-scores[a]));
+    const topTwo = sorted.slice(0,2).join(' + ');
+    label.setAttribute('x', x);
+    label.setAttribute('y', y - 12);
+    label.textContent = topTwo;
   </script>
 </body>
 </html>

@@ -1,21 +1,40 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PM Orientation Survey</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PM Compass — Find Your Product Management Orientation</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>PM Orientation Survey</h1>
-      <p>Discover your product management alignment (primary + secondary) across six orientations.</p>
+      <h1>PM Compass</h1>
+      <p class="lede">Place yourself on the User–Tech–Business triangle and discover your primary and secondary PM orientations.</p>
     </header>
+
     <main>
-      <p>This quiz presents 12 A/B scenarios. For each, pick where you land on a 5-point scale from
-      <em>Definitely (left)</em> to <em>Definitely (right)</em>. You can go back to change answers; your selections are preserved.</p>
-      <button id="startButton" onclick="window.location.href='quiz.html'">Start Survey</button>
+      <section class="intro">
+        <p>
+          PM Compass is a short, 12‑scenario survey that helps you see which of six
+          product management orientations you lean toward in practice:
+          <strong>Advocate</strong>, <strong>Innovator</strong>, <strong>Technologist</strong>,
+          <strong>Architect</strong>, <strong>Strategist</strong>, and <strong>Operator</strong>.
+          It’s inspired by the framing in
+          <a href="https://sociotechnical.org/archive/six-flavors-of-product-management/" target="_blank" rel="noopener">Six Flavors of Product Management</a>
+          on Sociotechnical.
+        </p>
+        <p>
+          For each A/B prompt, choose where you land on a 5‑point scale from
+          <em>Definitely (left)</em> to <em>Definitely (right)</em>. You can go back
+          and forth; your picks are preserved, and changing an answer updates your score.
+          At the end, you’ll see a breakdown by orientation and a point plotted inside
+          a colorful User–Tech–Business triangle.
+        </p>
+      </section>
+
+      <div class="cta">
+        <button class="primary" onclick="window.location.href='quiz.html'">Start the 12‑question survey</button>
+      </div>
     </main>
   </div>
 </body>
