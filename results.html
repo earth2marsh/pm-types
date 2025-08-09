@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Results • PM Orientation Survey</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Your Results</h1>
+      <p>These are your totals across the six orientations.</p>
+    </header>
+    <main id="results">
+      <!-- Filled by JS -->
+    </main>
+    <footer>
+      <button onclick="window.location.href='index.html'">Restart</button>
+    </footer>
+  </div>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const keys = ["Adv","Innov","Tech","Arch","Growth","Oper"];
+      const scores = {};
+      keys.forEach(k => scores[k] = Number(params.get(k) || 0));
+
+      const container = document.getElementById('results');
+      let html = '<ul class="results-list">';
+      keys.forEach(k => {
+        html += '<li><strong>'+k+':</strong> '+scores[k]+'</li>';
+      });
+      html += '</ul>';
+
+      // Shareable URL
+      const share = window.location.href;
+      html += '<p><small>Shareable link with your scores is in the address bar.</small></p>';
+      container.innerHTML = html;
+    })();
+  </script>
+</body>
+</html>
